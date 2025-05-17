@@ -1,6 +1,14 @@
-# DLAV Project – Phase 1 – Sylvain Beuret & Victor Labbe
+# DLAV Project – Phase 2 – Sylvain Beuret & Victor Labbe
 
-This repository implements a deep learning model for autonomous trajectory prediction, developed for Deep Learning for Autonomous class. The model predicts the future motion of an ego vehicle from RGB camera input and past motion history, using a **multi-modal ResNet-based architecture**.
+This repository implements a deep learning model for autonomous trajectory prediction, developed for Deep Learning for Autonomous class. 
+
+The model predicts the future motion of an ego vehicle from RGB camera input and past motion history. The model also compute depth maps and semantics to improve the common visual encoder based on a ResNet architecture
+
+We managed to obtained the following results:
+| Metric       | Value |
+|--------------|--------|
+| ADE (Validation) | **1.61** |
+| FDE (Validation) | 4.18     	|
 
 ---
 
@@ -8,15 +16,16 @@ This repository implements a deep learning model for autonomous trajectory predi
 
 The core model is `BetterDrivingPlanner`, an end-to-end deep neural network with the following structure:
 
-- **Visual encoder**: largely based on a pretrained **ResNet-18**, it extracts features from the input RGB image.
-- **History encoder**: A multi-layer perceptron (MLP) encodes past vehicle motion. Other structures have been tested such as LSTM but did not yield better results.
-- **Fusion module**: Combines vision and motion features via a fully connected network.
-- **Multi-modal trajectory decoder**: Outputs **K=6 possible future trajectories** and their **confidence scores**.
-- **Best trajectory selection**: The model selects the highest-confidence trajectory at inference time in a Winner takes All approach. 
+- **Visual encoder**: Largely based on a pretrained **ResNet-34**, this encoder extract the important features in the camera image. The last 2 layers are replaced and the layer is fine-tuned on our dataset. 
 
-This model is rather simple but infers pretty well after some tuning of its hyperparameters since it achieved an ADE of 1.61.
-Some more complex model have been tried notably leveraging transformer-based modules but the result where simply not as good. 
-We think this might come from the small size of the training dataset. Using pretrained models aswell as some augmentation could be tried to circumvent this issue.   
+- **Depth and Semantics Decoder**: The depth and semantics maps are computed from the visual features extracted by the encoder. Those features are then processed in **small ConvNets**. The resulting maps are pretty rough and do not match closely the ground truth. We managed to obtained very good maps by leveraging a **more complex architecture inspired of a U-net with residual connections to a ResNet34 encoder** but this cost us in term of performance on the planner. We also tried to embed and feed the auxialiary maps in the fusion MLP but the performance was degraded as well. Those tries can be accessed in the 'Extra' folder.
+
+- **History encoder**: A multi-layer perceptron (MLP) encodes past vehicle motion. Many other structures have been tested such as LSTM, GRU and small Transformers but we obtained the better results with our simple MLP.
+
+- **Fusion module**: Combines vision and motion features via a fully connected network. Here again we tried to implement a Transformer architecture to leverage the attention mechanism for learning the relations between camera and history but this was not concluding probably due to the size of our dataset. 
+
+- **Multi-modal trajectory decoder**: Fully connected networks outputs **multiple possible future trajectories** and their **confidence scores**.
+- **Best trajectory selection**: The model selects the highest-confidence trajectory at inference time in a Winner takes All approach. 
 
 
 ---
@@ -26,6 +35,19 @@ We think this might come from the small size of the training dataset. Using pret
 We implemented a few tools to get the best out of our models trainings:
 - **Logger**: Our logger regularly plot the metrics fed in arguments to track them during training
 - **Hyperparameter Tuning Tool**: This block is based on [optuna](https://optuna.org/) - a bayesian optimisation library - that find the best hyperparameters for the  model through try and error in a sample efficient way.
+- **Dataset Augmentation**: To obtain better generalization of our model, we doubled the size of the training dataset by flipping cameras and adapting accordingly trajectories. We also apply different lightning variations and Gaussian blur at every epoch during training to augment our performance on unseen data.
+
+---
+
+##  How we achieved our best model 
+
+Our best model was achieved with the following parameters:
+- Our model focus on only one auxiliary task : depth estimation with a weight of 0.05 
+- 6 Trajectories are predicted for 60 steps, the best one is selected in a Winner-Takes-All approach
+- LayerNorm, Dropout and Weight-Decay are used to stabilize and regularize. 
+- A Pretrained Resnet34 visual encoder is used frozen with the exception of its initial and final layers.
+- A learning rate scheduler is adopted to process the learning rate from 2e-4 to 5e-5.
+- Our model is trained on small amounts of epochs and then retrained with data augmentation starting from the best model previous weights
 
 ---
 
