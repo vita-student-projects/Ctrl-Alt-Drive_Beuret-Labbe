@@ -9,7 +9,8 @@ We managed to obtained the following results:
 | Metric       | Value |
 |--------------|--------|
 | ADE (Validation) | **1.40** |
-| FDE (Validation) | 3.97     	|
+| FDE (Validation) | **3.97** |
+| Kaggle Best Score | **1.48** |
 
 ---
 
