@@ -1,14 +1,15 @@
 # DLAV Project – Phase 2 – Sylvain Beuret & Victor Labbe
 
-This repository implements a deep learning model for autonomous trajectory prediction, developed for Deep Learning for Autonomous class. 
+This repository implements a deep learning model for autonomous trajectory prediction, developed for Deep Learning for Autonomous class : https://github.com/vita-student-projects/Ctrl-Alt-Drive_Beuret-Labbe/tree/Milestone-II
+
 
 The model predicts the future motion of an ego vehicle from RGB camera input and past motion history. The model also compute depth maps and semantics to improve the common visual encoder based on a ResNet architecture
 
 We managed to obtained the following results:
 | Metric       | Value |
 |--------------|--------|
-| ADE (Validation) | **1.61** |
-| FDE (Validation) | 4.18     	|
+| ADE (Validation) | **1.48** |
+| FDE (Validation) | 4.10     	|
 
 ---
 
