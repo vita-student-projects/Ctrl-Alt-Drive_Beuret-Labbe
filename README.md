@@ -8,8 +8,8 @@ The model predicts the future motion of an ego vehicle from RGB camera input and
 We managed to obtained the following results:
 | Metric       | Value |
 |--------------|--------|
-| ADE (Validation) | **1.48** |
-| FDE (Validation) | 4.10     	|
+| ADE (Validation) | **1.40** |
+| FDE (Validation) | 3.97     	|
 
 ---
 
