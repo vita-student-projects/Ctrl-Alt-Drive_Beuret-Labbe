@@ -12,6 +12,8 @@ We managed to obtained the following results:
 | FDE (Validation) | **3.97** |
 | Kaggle Best Score | **1.48** |
 
+Our best Kaggle Score was achieved under the name V LABBE.
+
 ---
 
 ##  Model Overview
