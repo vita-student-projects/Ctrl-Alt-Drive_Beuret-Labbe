@@ -8,10 +8,11 @@ The model predicts the future motion of an ego vehicle from RGB camera input and
 We managed to obtained the following results:
 | Metric       | Value |
 |--------------|--------|
-| ADE (Validation) | **??** |
-| FDE (Validation) | **??** |
-| Kaggle Best Score | **1.39** |
+| ADE (Validation) | **1.50** |
+| FDE (Validation) | **4.22** |
+| Kaggle Best Score | **1.39** | 
 
+Our best submission was made under the name Ctrl_Alt_Drive
 ---
 
 ##  Model Overview

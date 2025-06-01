@@ -1,0 +1,5 @@
+# Ignore dataset and augmentation folders
+augmented_train/
+train/
+val_real/
+test_public_real/
